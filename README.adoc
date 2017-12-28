@@ -1,0 +1,22 @@
+= DukeCon Docker Maven
+:author: Gerd Aschemann <gerd@aschemann.net>
+
+Create a special Docker Maven image for http://dukecon.org[DukeCon] builds. It is based on Docker `library/maven:slim`
+with the latest Maven version (3.5.2 as of 2017-12-28) based on a slim line Debian 9.x.
+
+Compose a current release
+
+  docker-compose build .
+
+Run the current release in your (Maven) project root by, e.g.,
+
+  docker run -it --rm \
+    -v "$HOME/.m2:/root/.m2" \
+    -v "$PWD":/usr/src/mymaven \
+    -w /usr/src/mymaven \
+    dukecon/dukecon-maven:latest \
+    mvn clean verify
+
+Push the current version to Docker Hub by
+
+  docker-compose push
