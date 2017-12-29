@@ -11,5 +11,3 @@ RUN apt-get install -qq -y xvfb
 RUN apt-get install -qq -y bzip2
 RUN apt-get -t jessie-backports install -qq -y openjdk-8-jre-headless ca-certificates-java
 RUN apt-get autoremove
-
-RUN npm install phantomjs-prebuilt
