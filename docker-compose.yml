@@ -5,3 +5,7 @@ services:
     image: dukecon/dukecon-maven:latest
     build:
       context: maven
+  dukecon-node:
+    image: dukecon/dukecon-node:latest
+    build:
+      context: node
