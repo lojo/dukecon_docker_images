@@ -4,4 +4,4 @@ services:
   dukecon-maven:
     image: dukecon/dukecon-maven:latest
     build:
-      context: .
+      context: maven
