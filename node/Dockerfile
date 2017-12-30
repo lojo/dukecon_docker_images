@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:8-slim
 MAINTAINER Gerd Aschemann <gerd@aschemann.net>
 
 ADD openjdk.list /etc/apt/sources.list.d/openjdk.list
