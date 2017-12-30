@@ -1,17 +1,26 @@
 = DukeCon Docker Images
 :author: Gerd Aschemann <gerd@aschemann.net>
 
-Create some special Docker images for http://dukecon.org[DukeCon] builds. We use them for build and test purposes
-(including Selenium e2e tests).
+Create some special Docker images for the https://dukecon.org[DukeCon project].
+
+We use some of them (<<sec:maven>> and <<sec:node>>) for build and test purposes (including Selenium e2e tests). Others
+(<<sec:httpd>>) are only base images for other purposes.
 
 Compose a current release
 
-  docker-compose build [ dukecon-maven | dukecon-node ]
+  docker-compose build [ dukecon-httpd | dukecon-maven | dukecon-node ]
 
 Push the current version to Docker Hub by
 
-  docker-compose push
+  docker-compose push [ dukecon-httpd | dukecon-maven | dukecon-node ]
 
+[[sec:httpd]]
+== HTTPD
+
+Base Image for DukeCon HTTPD services (e.g., https://github.com/dukecon/dukecon_pwa), based on image
+`library/httpd:alpine` with current Apache HTTPD (2.4.7 as of 2017-12-30).
+
+[[sec:maven]]
 == Maven
 
 It is based on Docker image `library/maven:slim` with the latest Maven version (3.5.2 as of 2017-12-28) based on a slim
@@ -26,6 +35,7 @@ Run the current release in your (Maven) project root by, e.g.,
     dukecon/dukecon-maven:latest \
     mvn clean verify
 
+[[sec:node]]
 == Node
 
 It is based on Docker `library/node:slim` with  Node (8.9.3) and NPM (5.5.1, as of 2017-12-30 based on a slim line

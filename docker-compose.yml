@@ -1,6 +1,10 @@
 version: "2"
 
 services:
+  dukecon-httpd:
+    image: dukecon/dukecon-httpd:latest
+    build:
+      context: httpd
   dukecon-maven:
     image: dukecon/dukecon-maven:latest
     build:
