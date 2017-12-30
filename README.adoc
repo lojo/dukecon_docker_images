@@ -1,22 +1,43 @@
-= DukeCon Docker Maven
+= DukeCon Docker Images
 :author: Gerd Aschemann <gerd@aschemann.net>
 
-Create a special Docker Maven image for http://dukecon.org[DukeCon] builds. It is based on Docker `library/maven:slim`
-with the latest Maven version (3.5.2 as of 2017-12-28) based on a slim line Debian 9.x.
+Create some special Docker images for http://dukecon.org[DukeCon] builds. We use them for build and test purposes
+(including Selenium e2e tests).
 
 Compose a current release
 
-  docker-compose build .
+  docker-compose build [ dukecon-maven | dukecon-node ]
+
+Push the current version to Docker Hub by
+
+  docker-compose push
+
+== Maven
+
+It is based on Docker image `library/maven:slim` with the latest Maven version (3.5.2 as of 2017-12-28) based on a slim
+line Debian 9.
 
 Run the current release in your (Maven) project root by, e.g.,
 
   docker run -it --rm \
     -v "$HOME/.m2:/root/.m2" \
-    -v "$PWD":/usr/src/mymaven \
-    -w /usr/src/mymaven \
+    -v "$PWD":/usr/src \
+    -w /usr/src \
     dukecon/dukecon-maven:latest \
     mvn clean verify
 
-Push the current version to Docker Hub by
+== Node
 
-  docker-compose push
+It is based on Docker `library/node:slim` with  Node (8.9.3) and NPM (5.5.1, as of 2017-12-30 based on a slim line
+Debian 8, which by default only can install a JDK 7. A JDK 8 is needed to run a current Selenium, so we install it from
+jessie-backports.
+
+Run the current release in your (Node) project root by e.g.,
+
+  docker run -i ${tty_option} --rm \
+    -v "$PWD":/usr/src \
+    -w /usr/src \
+    --privileged \
+    --cap-add=SYS_ADMIN \
+    dukecon/dukecon-node:latest \
+    /bin/sh -c "npm install && npm run build && npm run unit"
