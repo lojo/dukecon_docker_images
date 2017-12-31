@@ -3,8 +3,9 @@
 
 Create some special Docker images for the https://dukecon.org[DukeCon project].
 
-We use some of them (<<sec:maven>> and <<sec:node>>) for build and test purposes (including Selenium e2e tests). Others
-(<<sec:httpd>>) are only base images for other purposes.
+* We use some of them (<<sec:maven>> and <<sec:node>>) for build and test purposes (including Selenium e2e tests),
+* <<sec:httpd-base>> is a generic base image for Apache HTTPD based services,
+* <<sec:httpd-edge>> is the DukeCon edge service which simplifies composition of DukeCon installations.
 
 Compose a current release
 
@@ -14,11 +15,27 @@ Push the current version to Docker Hub by
 
   docker-compose push [ dukecon-httpd | dukecon-maven | dukecon-node ]
 
-[[sec:httpd]]
-== HTTPD
+[[sec:httpd-base]]
+== HTTPD-Base
 
 Base Image for DukeCon HTTPD services (e.g., https://github.com/dukecon/dukecon_pwa), based on image
 `library/httpd:alpine` with current Apache HTTPD (2.4.7 as of 2017-12-30).
+
+[[sec:httpd-edge]]
+== HTTPD-Edge
+
+The DukeCon edge service image can serve as a central dispatcher for DukeCon, e.g., as shown in
+<<fig:httpd-edge-sample>>. It is based on <<sec:httpd-base>>.
+
+[[fig:httpd-edge-sample]]
+[plantuml, httpd-edge-sample, svg]
+.DukeCon Sample Edge Composition
+plantuml::images/httpd-edge-sample.puml[,svg]
+
+It serves as an HTTP reverse proxy, forwarding all requests
+
+* to REST URIs to https://github.com/dukecon/dukecon_server[DukeCon-Server]
+* everything else to https://github.com/dukecon/dukecon_pwa[DukeCon PWA], the default DukeCon single page application.
 
 [[sec:maven]]
 == Maven

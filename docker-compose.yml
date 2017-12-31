@@ -1,10 +1,14 @@
 version: "2"
 
 services:
-  dukecon-httpd:
-    image: dukecon/dukecon-httpd:latest
+  dukecon-httpd-base:
+    image: dukecon/dukecon-httpd-base:latest
     build:
-      context: httpd
+      context: httpd-base
+  dukecon-httpd-edge:
+    image: dukecon/dukecon-httpd-edge:latest
+    build:
+      context: httpd-edge
   dukecon-maven:
     image: dukecon/dukecon-maven:latest
     build:

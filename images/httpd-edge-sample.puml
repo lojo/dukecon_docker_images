@@ -1,0 +1,28 @@
+@startuml
+skinparam handwritten true
+
+node "DukeCon Server" as dukecon_server {
+  interface "Port 8080" as dukecon_server_port
+}
+node "DukeCon PWA" as dukecon_pwa {
+  interface "Port 80" as dukecon_pwa_port
+}
+
+node "DukeCon Edge" #lightblue {
+'  together {
+    component "^\w+/\w+/rest/..." as rest
+    note right of rest
+      Forward all REST
+      service calls
+      to DukeCon-Server
+    endnote
+    component "^\w+/\w+/.*" as everything_else
+    note right of everything_else
+      Forward everything
+      else to DukeCon PWA
+    endnote
+'  }
+  rest -down-> dukecon_server_port
+  everything_else -down-> dukecon_pwa_port
+}
+@enduml
