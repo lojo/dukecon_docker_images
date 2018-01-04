@@ -1,4 +1,4 @@
-FROM dukecon/dukecon-httpd:latest
+FROM dukecon/dukecon-httpd-base:latest
 MAINTAINER Gerd Aschemann <gerd@aschemann.net>
 
 ADD dispatcher.conf /usr/local/apache2/sites.d/dispatcher.conf
