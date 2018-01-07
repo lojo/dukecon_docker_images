@@ -34,7 +34,7 @@ plantuml::images/httpd-edge-sample.puml[,svg]
 
 It serves as an HTTP reverse proxy, forwarding all requests
 
-* to REST URIs to https://github.com/dukecon/dukecon_server[DukeCon-Server]
+* to REST and health check URIs to https://github.com/dukecon/dukecon_server[DukeCon-Server]
 * everything else to https://github.com/dukecon/dukecon_pwa[DukeCon PWA], the default DukeCon single page application.
 
 [[sec:maven]]

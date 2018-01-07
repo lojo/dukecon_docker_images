@@ -10,9 +10,10 @@ node "DukeCon PWA" as dukecon_pwa {
 
 node "DukeCon Edge" #lightblue {
 '  together {
-    component "^\w+/\w+/rest/..." as rest
+    component "^\w+/\w+/rest/...\n^\w+/\w+/health$" as rest_and_health
     note right of rest
       Forward all REST
+      and health check
       service calls
       to DukeCon-Server
     endnote
@@ -22,7 +23,7 @@ node "DukeCon Edge" #lightblue {
       else to DukeCon PWA
     endnote
 '  }
-  rest -down-> dukecon_server_port
+  rest_and_health -down-> dukecon_server_port
   everything_else -down-> dukecon_pwa_port
 }
 @enduml
