@@ -1,0 +1,50 @@
+@startuml
+skinparam handwritten true
+
+node "Device" {
+    [Client]  as Client
+}
+
+node "DukeCon" {
+    component "OS Apache" <<Apache HTTPD>> {
+        component "<STAGE>" <<VirtualHost>> as Apache
+    }
+    note right of Apache
+    <STAGE>.<DOMAIN>.<TLD> are only a placeholders.
+    Replace with any other DukeCon instance, e.g.,
+    - latest.dukecon.org
+    - testing.dukecon.org
+    - programm.javaland.eu
+    - programm.doag.org
+    endnote
+    node KeyCloak-Server <<Docker : WildFly>> {
+        [KeyCloak] <<Service>>
+    }
+    Apache -down-> KeyCloak : /auth/*
+    node "Dukecon <STAGE>" <<Docker Compose>> {
+        node "DukeCon <STAGE> Edge" <<Docker>> {
+            component "DukeCon Edge" <<Apache HTTPD>> as DukeconEdge
+        }
+        Apache -down-> DukeconEdge : /* (Default)
+        node "DukeCon <STAGE> Feedback Server" <<Docker>> #red {
+            component "DukeCon Feedback" <<Spring Boot>> as DukeconFeedbackService #red
+        }
+        DukeconEdge .down-> DukeconFeedbackService : /rest/feedback/*
+        node "DukeCon <STAGE> Server" <<Docker>> {
+            component "DukeCon" <<Spring Boot>> as DukeconService
+        }
+        DukeconEdge -down-> DukeconService : /rest/conferences/* \n /rest/admin/* \n /rest/preferences/* \n /rest/...
+        node "DukeCon <STAGE> Admin" <<Docker>> {
+            component "DukeCon Admin" <<Apache HTTPD>> as DukeconAdmin
+        }
+        DukeconEdge .down-> DukeconAdmin : /admin/*
+        node "DukeCon <STAGE> PWA" <<Docker>> {
+            component "DukeCon PWA" <<Apache HTTPD>> as DukeconPWA
+        }
+        DukeconEdge -down-> DukeconPWA : /* (Default)
+    }
+}
+
+Client -down->Apache : https://<STAGE>.<DOMAIN>.<TLD>/*
+
+@enduml
