@@ -1,0 +1,30 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  artifacts:
+  - image: changeme
+    context: .
+    docker: {}
+  tagPolicy:
+    envTemplate:
+      template: '{{.DOCKER_REGISTRY}}/dukecon-jx/dukecon-docker-images:{{.VERSION}}'
+  local: {}
+deploy:
+  kubectl: {}
+profiles:
+- name: dev
+  build:
+    artifacts:
+    - docker: {}
+    tagPolicy:
+      envTemplate:
+        template: '{{.DOCKER_REGISTRY}}/dukecon-jx/dukecon-docker-images:{{.DIGEST_HEX}}'
+    local: {}
+  deploy:
+    helm:
+      releases:
+      - name: dukecon-docker-images
+        chartPath: charts/dukecon-docker-images
+        setValueTemplates:
+          image.repository: '{{.DOCKER_REGISTRY}}/dukecon-jx/dukecon-docker-images'
+          image.tag: '{{.DIGEST_HEX}}'
