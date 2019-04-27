@@ -9,6 +9,10 @@ services:
     image: dukecon/dukecon-httpd-edge:latest
     build:
       context: httpd-edge
+  dukecon-httpd-edge-with-static:
+    image: dukecon/dukecon-httpd-edge-with-static:latest
+    build:
+      context: httpd-edge-with-static
   dukecon-maven:
     image: dukecon/dukecon-maven:latest
     build:

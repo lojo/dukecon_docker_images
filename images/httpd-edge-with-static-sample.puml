@@ -7,6 +7,8 @@ node "DukeCon Server" as dukecon_server {
 node "DukeCon PWA" as dukecon_pwa {
   interface "Port 80" as dukecon_pwa_port
 }
+folder data {
+}
 
 node "DukeCon Edge" #lightblue {
 '  together {
@@ -17,6 +19,11 @@ node "DukeCon Edge" #lightblue {
       service calls
       to DukeCon-Server
     endnote
+    component "^\w+/\w+/rest/(init|image-resources).json$\n^\w+/\w+/rest/conferences..." as rest_conferences
+    note right of rest_conferences
+      Get some data from a
+      mounted volume
+    endnote
     component "^\w+/\w+/.*" as everything_else
     note right of everything_else
       Forward everything
@@ -25,5 +32,6 @@ node "DukeCon Edge" #lightblue {
 '  }
   rest_and_health -down-> dukecon_server_port
   everything_else -down-> dukecon_pwa_port
+  rest_conferences -down-> data
 }
 @enduml

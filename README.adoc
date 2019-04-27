@@ -1,5 +1,6 @@
 = DukeCon Docker Images
 :author: Gerd Aschemann <gerd@aschemann.net>
+:icons: font
 
 Create some special Docker images for the https://dukecon.org[DukeCon project].
 
@@ -36,6 +37,23 @@ It serves as an HTTP reverse proxy, forwarding all requests
 
 * to REST and health check URIs to https://github.com/dukecon/dukecon_server[DukeCon-Server]
 * everything else to https://github.com/dukecon/dukecon_pwa[DukeCon PWA], the default DukeCon single page application.
+
+[[sec:httpd-edge-with-static]]
+== HTTPD-Edge with static contents
+
+A variant of the <<sec:httpd-edge,DukeCon edge service image>> can additionally provide some static DukeCon contents, e.g., as shown in
+<<fig:httpd-edge-with-static-sample>>. It is based on <<sec:httpd-base>>.
+
+[[fig:httpd-edge-with-static-sample]]
+[plantuml, httpd-edge-with-static-sample, svg]
+.DukeCon Sample Edge Composition with static data
+plantuml::images/httpd-edge-with-static-sample.puml[,svg]
+
+Besides it's forwarding like the <<sec:httpd-edge,DukeCon edge service>> it serves data from a local (mounted) volume.
+
+NOTE: In the future we want to provide more and more contents (conference data) as static data which are not transformed on each request by the classic DukeCon Server.
+Most of the data changes rarely.
+Hence it could also be transformed if the source data changes and be provided as static content directly by the edge service.
 
 [[sec:maven]]
 == Maven
