@@ -10,11 +10,11 @@ Create some special Docker images for the https://dukecon.org[DukeCon project].
 
 Compose a current release
 
-  docker-compose build [ dukecon-httpd-base | dukecon-httpd-edge | dukecon-maven | dukecon-node ]
+  docker-compose build [ dukecon-httpd-base | dukecon-httpd-edge | dukecon-httpd-edge-with-static | dukecon-maven | dukecon-node ]
 
 Push the current version to Docker Hub by
 
-  docker-compose push [ dukecon-httpd-base | dukecon-httpd-edge | dukecon-maven | dukecon-node ]
+  docker-compose push [ dukecon-httpd-base | dukecon-httpd-edge | dukecon-httpd-edge-with-static | dukecon-maven | dukecon-node ]
 
 [[sec:httpd-base]]
 == HTTPD-Base
