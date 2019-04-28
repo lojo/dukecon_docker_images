@@ -23,6 +23,19 @@ pipeline {
         sh 'docker-compose push'
       }
     }
+    stage('Clean / Build and publish documentation') {
+      steps {
+        withMaven {
+          sh 'mvn clean package'
+        }
+        publishHTML target: [allowMissing         : false,
+                             alwaysLinkToLastBuild: false,
+                             keepAll              : true,
+                             reportDir            : 'target/generated-docs/',
+                             reportFiles          : 'index.html',
+                             reportName           : 'Documentation']
+      }
+    }
   }
   post {
     always {
