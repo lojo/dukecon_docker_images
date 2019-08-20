@@ -55,7 +55,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('nodejs') {
+        container('maven') {
           dir('./charts/dukecon-docker-images') {
             sh "jx step changelog --batch-mode --version v\$(cat ../../VERSION)"
 
