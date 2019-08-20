@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ template "fullname" . }}-sites-d-config
+    labels:
+        draft: {{ default "draft-app" .Values.draft }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+    dispatcher.conf: |
+       AllowEncodedSlashes nodecode
+
+       ## Logging
+       # LogLevel info proxy:trace5
+
+       ErrorLog "logs/error.log"
+       ServerSignature Off
+       CustomLog "logs/access.log" combined
+
+       ## Header rules
+       ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#header
+       Header set P3P "CP=\"Potato\""
+
+       ## Proxy rules
+       ProxyRequests Off
+       ProxyPreserveHost On
+
+       ProxyPassMatch ^/(health|info)/server$ http://dukecon-server:80/$1
+       ProxyPassReverse ^/(health|info)/server$ http://dukecon-server:80/$1
+
+       ProxyPassMatch ^/(health|info)/feedback$ http://dukecon-feedback:80/actuator/$1
+       ProxyPassReverse ^/(health|info)/feedback$ http://dukecon-feedback:80/actuator$1
+
+       ProxyPassMatch ^/(conferences) http://dukecon-server:80/rest/$1
+       ProxyPassReverse ^/(conferences) http://dukecon-server:80/rest/$1
+
+       ProxyPassMatch ^/inspectit/(.+) http://dukecon-server:80/inspectit/$1
+       ProxyPassReverse ^/inspectit/(.+) http://dukecon-server:80/inspectit/$1
+
+       # Drop this! It can be replaced by the more generic /health/server in Nagios
+       ProxyPassMatch ^/(\w+)/(\d+)/(health)$ http://dukecon-server:80/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/(health)$ http://dukecon-server:80/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/(keycloak).json$ http://dukecon-server:80/rest/$3.json
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/(keycloak).json$ http://dukecon-server:80/rest/$3.json
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/(image-resources|init).json http://dukecon-server:80/rest/$3/$1/$2
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/(image-resources|init).json http://dukecon-server:80/rest/$3/$1/$2
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/(preferences) http://dukecon-server:80/rest/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/(preferences) http://dukecon-server:80/rest/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/conferences/(.+) http://dukecon-server:80/rest/conferences/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/conferences/(.+) http://dukecon-server:80/rest/conferences/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/eventsBooking/(.+) http://dukecon-server:80/rest/eventsBooking/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/eventsBooking/(.+) http://dukecon-server:80/rest/eventsBooking/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/speaker/images/(\w+) http://dukecon-server:80/rest/speaker/images/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/speaker/images/(\w+) http://dukecon-server:80/rest/speaker/images/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/admin/(.+) http://dukecon-server:80/rest/admin/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/admin/(.+) http://dukecon-server:80/rest/admin/$3
+
+       ProxyPassMatch ^/(\w+)/(\d+)/img/favicon.ico http://dukecon-server:80/img/$1$2/favicon/favicon.ico
+       ProxyPassReverse ^/(\w+)/(\d+)/img/favicon.ico http://dukecon-server:80/img/$1$2/favicon/favicon.ico
+
+       # Forward feedback traffic to feedback service
+       ProxyPassMatch ^/(\w+)/(\d+)/rest/feedback/(.+) http://dukecon-feedback:80/rest/feedback/$3
+       ProxyPassReverse ^/(\w+)/(\d+)/rest/feedback/(.+) http://dukecon-feedback:80/rest/feedback/$3
+       # When we come back from KeyCloak and are authorized the initial '(\w+)/(\d+)' are dropped from the rewrite!
+       ProxyPassMatch ^/rest/feedback/(.+) http://dukecon-feedback:8090/rest/feedback/$1
+       ProxyPassReverse ^/rest/feedback/(.+) http://dukecon-feedback:8090/rest/feedback/$1
+
+       # Forward oauth2 traffic to feedback service / TODO: Separate this in the future for Generic server / Feedback server
+       ProxyPassMatch ^/oauth2/(.+) http://dukecon-feedback:80/oauth2/$1
+       ProxyPassReverse ^/oauth2/(.+) http://dukecon-feedback:80/oauth2/$1
+
+       # Forward login/oauth2 traffic to feedback service / TODO: Separate this in the future for Generic server / Feedback server
+       ProxyPassMatch ^/login/oauth2/(.+) http://dukecon-feedback:80/login/oauth2/$1
+       ProxyPassReverse ^/login/oauth2/(.+) http://dukecon-feedback:80/login/oauth2/$1
+
+       # Forward admin traffic to admin service
+       ProxyPassMatch ^/(\w+/\w+)/admin/(.*) http://dukecon-admin-client:80/$2
+       ProxyPassReverse ^/(\w+/\w+)/admin/(.*) http://dukecon-admin-client:80/$2
+
+       # Forward everything else to PWA Service
+       ProxyPassMatch ^/(\w+/\w+)/(.*) http://dukecon-pwa:80/$2
+       ProxyPassReverse ^/(\w+/\w+)/(.*) http://dukecon-pwa:80/$2
