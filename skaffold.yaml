@@ -2,7 +2,7 @@ apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
-  - image: jxtest-199909/dukecon-docker-images
+  - image: jxtest-199909/dukecon
     context: httpd-edge
     docker: {}
   tagPolicy:
@@ -21,8 +21,8 @@ profiles:
   deploy:
     helm:
       releases:
-      - name: dukecon-docker-images
-        chartPath: charts/dukecon-docker-images
+      - name: dukecon
+        chartPath: charts/dukecon
         setValueTemplates:
           image.repository: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}'
           image.tag: '{{.DIGEST_HEX}}'

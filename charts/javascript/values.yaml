@@ -14,7 +14,7 @@ env:
 knativeDeploy: false
 
 service:
-  name: dukecon-docker-images
+  name: dukecon
   type: ClusterIP
   externalPort: 80
   internalPort: 8080

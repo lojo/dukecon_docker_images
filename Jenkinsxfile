@@ -4,7 +4,7 @@ pipeline {
   }
   environment {
     ORG = 'dukecon-jx'
-    APP_NAME = 'dukecon-docker-images'
+    APP_NAME = 'dukecon'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     DOCKER_REGISTRY_ORG = 'jxtest-199909'
   }
@@ -58,7 +58,7 @@ pipeline {
       }
       steps {
         container('maven') {
-          dir('./charts/dukecon-docker-images') {
+          dir('./charts/dukecon') {
             sh "jx step changelog --batch-mode --version v\$(cat ../../VERSION)"
 
             // release the helm chart

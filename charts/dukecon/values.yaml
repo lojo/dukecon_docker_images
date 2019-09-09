@@ -7,7 +7,7 @@ image:
   tag: dev
   pullPolicy: IfNotPresent
 service:
-  name: dukecon-docker-images
+  name: dukecon
   type: ClusterIP
   externalPort: 80
   internalPort: 80
